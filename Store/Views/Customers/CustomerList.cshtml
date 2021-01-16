@@ -1,0 +1,60 @@
+﻿@model Store.ViewModel.CustomerViewModel
+
+@{
+    /**/
+
+    ViewBag.Title = "CustomerList";
+}
+
+<br />
+@Html.ActionLink("Add Customer", "CustomerForm", "Customer", new { @class = "btn btn-primary" })
+
+<h2>Customer List</h2>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Birth Date</th>
+        <th>Phone</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    <tbody>
+        @foreach (var customer in Model.Customers)
+        {
+            var birthDate = String.Format("{0: M/d/yyyy}", customer.birth_date);
+        <tr>
+            <td>@customer.first_name</td>
+            <td>@customer.last_name</td>
+            <td>@birthDate</td>
+            <td>@customer.phone</td>
+            <td>@Html.ActionLink("Edit", "EditCustomer", "Customers", new { id = customer.customer_id }, null)</td>
+            <td><a data-target="#DeleteModal-@customer.customer_id" data-toggle="modal" class="text-danger">Delete</a></td>
+            @using (Html.BeginForm("DeleteCustomer/"+customer.customer_id, "Customers", FormMethod.Post,null))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal" tabindex="-1" role="dialog" id="DeleteModal-@customer.customer_id">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Delete Confirmation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this customer?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                <button type="submit" class="btn btn-danger">Yes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </tr>
+        }
+    </tbody>
+</table>
+
